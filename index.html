@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes" />
+  <meta name="theme-color" content="#06020e" />
+  <meta name="description" content="VIRAMAYAK'26 - 3D Interactive Flipbook & Digital Booklet Viewer. Faculty of Engineering, University of Sri Jayewardenepura." />
+  <title>VIRAMAYAK'26 | 3D Interactive Flipbook</title>
+
+  <!-- Google Fonts: Cinzel (Concert Serif), Plus Jakarta Sans (Modern UI), Noto Sans Sinhala -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Noto+Sans+Sinhala:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Ambient Stage Lighting & Canvas Particles -->
+  <div class="ambient-background">
+    <div class="ambient-spotlight"></div>
+    <canvas id="particle-canvas"></canvas>
+  </div>
+
+  <!-- Main Viewport Layout -->
+  <div class="app-viewport" id="app-viewport">
+
+    <!-- Top Header -->
+    <header class="top-header safe-top">
+      <div class="brand-section">
+        <span class="brand-badge" title="විරාමයක් - සිහිනයට පියමනින අතරතුර...">විරාමයක්</span>
+        <div>
+          <h1 class="brand-title">VIRAMAYAK'26</h1>
+          <span class="brand-subtitle">Students' Union • Faculty of Engineering • USJ</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Watch Video Teaser -->
+        <button class="glass-pill btn-control" id="btn-video-teaser" data-tooltip="Watch Teaser Video" aria-label="Watch Teaser Video">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+
+        <!-- Thumbnails Gallery -->
+        <button class="glass-pill btn-control" id="btn-thumbnails" data-tooltip="Page Overview" aria-label="Page Overview">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        </button>
+
+        <!-- Messages & About Modal -->
+        <button class="glass-pill btn-control" id="btn-info" data-tooltip="Alumni Messages & Info" aria-label="Information">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+
+        <!-- Concert Ambience Audio Toggle -->
+        <button class="glass-pill btn-control" id="btn-ambience" data-tooltip="Concert Ambience Music" aria-label="Concert Ambience">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+        </button>
+
+        <!-- Fullscreen Button -->
+        <button class="glass-pill btn-control" id="btn-fullscreen" data-tooltip="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5-5m-6 16H4m0 0v-4m0 4l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Center Stage Container -->
+    <main class="stage-container" id="stage-container">
+
+      <!-- Desktop Floating Nav Arrow: Previous -->
+      <button class="nav-arrow-btn nav-arrow-prev" id="arrow-prev" data-tooltip="Previous (←)" aria-label="Previous Page">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Zoom and Pan Wrapper -->
+      <div class="zoom-wrapper" id="zoom-wrapper">
+        <div class="flipbook-container" id="flipbook-container">
+          <!-- StPageFlip mounts the 8 pages dynamically inside #viramayak-book -->
+          <div id="viramayak-book"></div>
+        </div>
+      </div>
+
+      <!-- Desktop Floating Nav Arrow: Next -->
+      <button class="nav-arrow-btn nav-arrow-next" id="arrow-next" data-tooltip="Next (→ / Space)" aria-label="Next Page">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+    </main>
+
+    <!-- Bottom Control Dock -->
+    <footer class="control-dock-wrapper safe-bottom">
+
+      <!-- Interactive Page Timeline Scrubber -->
+      <div class="scrub-container">
+        <div class="scrub-track" id="scrub-track" title="Drag to jump across booklet pages">
+          <div class="scrub-fill" id="scrub-fill"></div>
+          <div class="scrub-thumb" id="scrub-thumb"></div>
+        </div>
+      </div>
+
+      <!-- Glassmorphic Floating Toolbar -->
+      <div class="control-toolbar">
+
+        <!-- First Page -->
+        <button class="btn-control" id="btn-first-page" data-tooltip="First Page (Home)" data-hide-mobile="true" aria-label="First Page">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Previous Page -->
+        <button class="btn-control" id="btn-prev" data-tooltip="Previous Page" aria-label="Previous Page">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Page Indicator Pill (Click to open thumbnails) -->
+        <div class="page-badge" id="page-badge" data-tooltip="Click for Overview" role="button" tabindex="0">
+          <span id="page-indicator-text">Page 1 of 8</span>
+          <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+
+        <!-- Next Page -->
+        <button class="btn-control" id="btn-next" data-tooltip="Next Page" aria-label="Next Page">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <!-- Last Page -->
+        <button class="btn-control" id="btn-last-page" data-tooltip="Last Page (End)" data-hide-mobile="true" aria-label="Last Page">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Zoom Out -->
+        <button class="btn-control" id="btn-zoom-out" data-tooltip="Zoom Out" aria-label="Zoom Out">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+          </svg>
+        </button>
+
+        <!-- Zoom Indicator (Click to Reset) -->
+        <span class="zoom-indicator" id="zoom-indicator" data-tooltip="Click to Reset Zoom" title="Click to Reset Zoom">100%</span>
+
+        <!-- Zoom In -->
+        <button class="btn-control" id="btn-zoom-in" data-tooltip="Zoom In" aria-label="Zoom In">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Auto-Flip Slideshow Toggle -->
+        <button class="btn-control" id="btn-autoflip" data-tooltip="Auto-Play Presentation" aria-label="Auto Flip Slideshow">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          </svg>
+          <div class="slideshow-progress-bar" id="slideshow-progress"></div>
+        </button>
+
+        <!-- Page Flip Sound Toggle -->
+        <button class="btn-control active" id="btn-sound" data-tooltip="Page Turn Sound Effect" aria-label="Toggle Page Sound">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+        </button>
+
+        <!-- Download Original PDF -->
+        <button class="btn-control" id="btn-download-pdf" data-tooltip="Download Original PDF" aria-label="Download PDF">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
+
+        <!-- Share Button -->
+        <button class="btn-control" id="btn-share" data-tooltip="Share Flipbook" data-hide-mobile="true" aria-label="Share">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Thumbnails Drawer Modal -->
+  <div class="modal-overlay" id="modal-thumbnails" role="dialog" aria-modal="true" aria-labelledby="modal-thumbnails-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-thumbnails-title">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          Booklet Pages Overview
+        </h2>
+        <button class="modal-close-btn" aria-label="Close Overview">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body custom-scrollbar">
+        <div class="thumbnail-grid" id="thumbnail-grid">
+          <!-- Dynamically populated thumbnail cards -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teaser Video Modal -->
+  <div class="modal-overlay" id="modal-video" role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-video-title">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          VIRAMAYAK'26 Teaser Preview
+        </h2>
+        <button class="modal-close-btn" aria-label="Close Video">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="video-container">
+          <video id="teaser-video" controls playsinline preload="metadata">
+            <source src="assets/video/viramayak-preview.mp4" type="video/mp4" />
+            Your browser does not support HTML5 video playback.
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information & Alumni Messages Modal -->
+  <div class="modal-overlay" id="modal-info" role="dialog" aria-modal="true" aria-labelledby="modal-info-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-info-title">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          VIRAMAYAK'26 Messages & Overview
+        </h2>
+        <button class="modal-close-btn" aria-label="Close Info">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body custom-scrollbar">
+
+        <!-- Concert Introduction -->
+        <div class="message-card" style="border-left: 4px solid var(--color-gold);">
+          <h3 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-gold-light); margin-bottom: 6px;">
+            විරාමයක්'26 - An Evening of Music, Rhythm & Memories
+          </h3>
+          <p style="font-size: 0.88rem; line-height: 1.6; color: #cbd5e1;">
+            Organized with pride by the <strong>Students' Union, Faculty of Engineering, University of Sri Jayewardenepura</strong>.
+            This grand musical initiative brings together students, alumni, and music lovers to celebrate rhythm, memories, and unity while championing the noble causes of <em>Sith Paura</em>.
+          </p>
+        </div>
+
+        <!-- Message from Windhula Gammanpila -->
+        <div class="message-card">
+          <div class="message-author-header">
+            <img src="assets/images/page-02.jpg" alt="Windhula Gammanpila" class="message-avatar" style="object-position: 25% 30%;" />
+            <div>
+              <div class="message-author-name">Windhula Gammanpila</div>
+              <div class="message-author-role">Alumna – Faculty of Engineering, University of Sri Jayewardenepura</div>
+            </div>
+          </div>
+          <div class="message-quote">
+            "My heartfelt wishes to Viramayak 2026 - Live In Concert, a beautiful initiative that brings together the magic of music and the power of kindness. May this noble endeavour through Sith Paura open doors to brighter futures, inspire countless dreams, and remind us that even a little kindness can make a lasting difference. Wishing the organizing committee every success in creating a meaningful impact!"
+          </div>
+        </div>
+
+        <!-- Message from Daham T. Adikari -->
+        <div class="message-card">
+          <div class="message-author-header">
+            <img src="assets/images/page-03.jpg" alt="Daham T. Adikari" class="message-avatar" style="object-position: 25% 30%;" />
+            <div>
+              <div class="message-author-name">Daham T. Adikari</div>
+              <div class="message-author-role">Alumnus – Faculty of Engineering, University of Sri Jayewardenepura</div>
+            </div>
+          </div>
+          <div class="message-quote">
+            "Our alma mater has always been a place where dreams begin. It is wonderful to see Viramayak 2026 taking that spirit forward through Sith Paura. May this initiative inspire kindness, empower young minds, and make dreams come true. Wishing you all the very best!"
+          </div>
+        </div>
+
+        <!-- Message from Chamod Jayasinghe -->
+        <div class="message-card">
+          <div class="message-author-header">
+            <img src="assets/images/page-04.jpg" alt="Chamod Jayasinghe" class="message-avatar" style="object-position: 25% 30%;" />
+            <div>
+              <div class="message-author-name">Chamod Jayasinghe</div>
+              <div class="message-author-role">Alumnus – Faculty of Engineering, University of Sri Jayewardenepura</div>
+            </div>
+          </div>
+          <div class="message-quote">
+            "Proud to see the next generation carrying forward the values of compassion and service through Viramayak 2026 – Live In Concert. May every effort turn into an opportunity and every contribution into a brighter future. My warmest wishes for a grand success!"
+          </div>
+        </div>
+
+        <!-- Keyboard / Touch Navigation Tips -->
+        <div class="message-card" style="background: rgba(15, 8, 30, 0.5); border-color: rgba(157, 78, 221, 0.2);">
+          <h4 style="font-size: 0.88rem; font-weight: 600; color: var(--color-gold-light); margin-bottom: 8px;">
+            Interactive Controls & Shortcuts
+          </h4>
+          <ul style="font-size: 0.8rem; line-height: 1.8; color: #94a3b8; padding-left: 18px;">
+            <li><strong>Swipe / Drag:</strong> Touch & drag any page corner or edge to flip.</li>
+            <li><strong>Double Tap / Click:</strong> Zoom into high resolution (2x). Double tap again to reset.</li>
+            <li><strong>Pinch to Zoom:</strong> Full two-finger pinch gesture on mobile phones & tablets.</li>
+            <li><strong>Keys:</strong> Left/Right arrows to flip, <code>Home</code>/<code>End</code> for cover/back, <code>F</code> for fullscreen.</li>
+            <li><strong>Audio:</strong> Toggle realistic page flutter sound or orchestral concert hall ambience in the toolbar.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- PageFlip Core Engine -->
+  <script src="js/page-flip.browser.js"></script>
+
+  <!-- Audio Synthesis & Effects -->
+  <script src="js/audio.js"></script>
+
+  <!-- Main Application Controller -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
+

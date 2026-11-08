@@ -1,0 +1,20 @@
+{
+  "name": "viramayak-26-flipbook",
+  "version": "1.0.0",
+  "description": "VIRAMAYAK'26 3D Interactive Flipbook & Digital Booklet Viewer",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000 ."
+  },
+  "keywords": [
+    "viramayak",
+    "flipbook",
+    "3d",
+    "booklet",
+    "viewer",
+    "usj",
+    "engineering"
+  ],
+  "author": "Students' Union, Faculty of Engineering, University of Sri Jayewardenepura",
+  "license": "ISC"
+}
